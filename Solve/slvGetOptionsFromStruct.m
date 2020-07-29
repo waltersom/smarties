@@ -1,4 +1,4 @@
-function [bGetR,Delta,NB,absmvec,bGetSymmetricT,bOutput] = slvGetOptionsFromStruct(stParams, stOptions)
+function [bGetR,Delta,NB,absmvec,bGetSymmetricT,bOutput,bForceNormalBessels] = slvGetOptionsFromStruct(stParams, stOptions)
 %% slvGetOptionsFromStruct
 % Reads optional parameters from struct, else set to default values
 % (used in the "solve" functions)
@@ -42,5 +42,12 @@ if isfield(stOptions,'bOutput')
 else
     bOutput = true; % default is true (display output is on)
 end
+% Force normal Bessel functions (for eg large spheroids)
+if isfield(stOptions,'bForceNormalBessels')
+    bForceNormalBessels = stOptions.bForceNormalBessels;
+else
+    bForceNormalBessels = false; % default is false (use modified Bessels)
+end
+
 
 end

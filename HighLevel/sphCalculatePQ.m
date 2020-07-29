@@ -1,4 +1,4 @@
-function CstPQa = sphCalculatePQ(nNmax, absmvec, stRtfunc, stParams, NB)
+function CstPQa = sphCalculatePQ(nNmax, absmvec, stRtfunc, stParams, NB, bForceNormalBessels)
   %% sphCalculatePQ
 % Calculates P,Q matrices for a spheroid using the algorithm of [JQSRT 123, 153 (2013)]
 % 
@@ -44,6 +44,9 @@ function CstPQa = sphCalculatePQ(nNmax, absmvec, stRtfunc, stParams, NB)
 
 if nargin < 5 || NB < nNmax
     NB = nNmax;
+end
+if nargin < 6
+    bForceNormalBessels = false;
 end
 
 % ignore divide-by-zero warnings in Octave
@@ -92,7 +95,7 @@ AnAk = Anvec.' * Anvec; % Matrix product gives [N x N] matrix
 % The hard part is to get the modified (non-problematic) radial functions
 % Note that these do not depend on m
 % The following function uses the algorithm of [JQSRT 2013] to achieve this
-[stXipsiAll, stPsipsiAll]=sphGetModifiedBesselProducts(nNmax, s, x, NB);
+[stXipsiAll, stPsipsiAll]=sphGetModifiedBesselProducts(nNmax, s, x, NB, bForceNormalBessels);
 % These are [N x K=N x T] arrays
 
 % We will use them as [N x T x K] for a given k, so we can speed up

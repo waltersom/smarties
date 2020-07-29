@@ -1,4 +1,4 @@
-function [Delta, err] = sphEstimateDelta(stGeometry, stParams, NQmax)
+function [Delta, err] = sphEstimateDelta(stGeometry, stParams, NQmax, bForceNormalBessels)
   %% sphEstimateDelta
 % Estimates Delta from the convergence of T^{22,m=1}_{11} [see JQSRT2015]
 % 
@@ -25,6 +25,9 @@ function [Delta, err] = sphEstimateDelta(stGeometry, stParams, NQmax)
 if nargin < 3
     NQmax = 80;
 end
+if nargin < 4
+    bForceNormalBessels = false;
+end
 
 minAcc = 1e-4;
 
@@ -45,7 +48,7 @@ Afit = [ones(NforConv,1), (1:NforConv).'];
 % Store errors
 T2211err = zeros(floor((NQmax+1)/2),1);
 % Calculates P,Q
-CstPQa = sphCalculatePQ(NQmax, absmvec, stGeometry, stParam1, NQmax);
+CstPQa = sphCalculatePQ(NQmax, absmvec, stGeometry, stParam1, NQmax, bForceNormalBessels);
 T2211=0;
 
 for N = 1:2:NQmax % Loop over truncation (only odd numbers)

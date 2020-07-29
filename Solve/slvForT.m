@@ -38,7 +38,7 @@ stk1s.s=s;
 N = stParams.N;
 nNbTheta = stParams.nNbTheta;
 
-[bGetR,Delta,NB,absmvec,bGetSymmetricT, bOutput] = slvGetOptionsFromStruct(stParams,stOptions);
+[bGetR,Delta,NB,absmvec,bGetSymmetricT, bOutput, bForceNormalBessels] = slvGetOptionsFromStruct(stParams,stOptions);
 
 stk1s.bOutput=bOutput;
 
@@ -50,7 +50,7 @@ if nargin<3
 end
 
 if Delta<0 % then need to estimate Delta
-    [Delta, T2211err]= sphEstimateDelta(stGeometry, stk1s);
+    [Delta, T2211err]= sphEstimateDelta(stGeometry, stk1s, 80, bForceNormalBessels);
     if isnan(Delta)
         disp ('ERROR: Delta could not be found. Results are likely to be non-converged. Try choosing Delta manually instead.');
         return;
@@ -61,7 +61,7 @@ end
 NQ = N+Delta;% NQ>=N: Maximum multipole order for computing P and Q matrices
 
 % Estimating NB
-if NB<=0
+if NB<=0 && ~bForceNormalBessels
     NB=sphEstimateNB(NQ, stGeometry, stk1s);
 end
 if NB<NQ
@@ -69,7 +69,7 @@ if NB<NQ
 end
 
 % Calculates P and Q
-CstPQa = sphCalculatePQ(NQ, absmvec, stGeometry, stk1s, NB);
+CstPQa = sphCalculatePQ(NQ, absmvec, stGeometry, stk1s, NB, bForceNormalBessels);
 
 % Get T (and possibly R)
 CstTRa = rvhGetTRfromPQ(CstPQa,bGetR);

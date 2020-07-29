@@ -31,7 +31,7 @@ end
 minAcc = 1e-3;
 maxAcc = min(maxAcc,minAcc);
 
-[~,~,~,~,bGetSymmetricT, bOutput] = slvGetOptionsFromStruct(stParams,stOptions);
+[~,~,~,~,bGetSymmetricT, bOutput, bForceNormalBessels] = slvGetOptionsFromStruct(stParams,stOptions);
 
 stk1s.bOutput=bOutput;
 
@@ -65,10 +65,14 @@ warning('off', 'SMARTIES:missingm'); % suppress warnings in rvhGetAverageCrossSe
 for nq=1:nqmax % loop on NQ
     NQ=NQarr(nq);
     % Estimating NB
-    NB=sphEstimateNB(NQ, stGeometry, stk1s);
+    if bForceNormalBessels
+        NB = NQ;
+    else
+        NB=sphEstimateNB(NQ, stGeometry, stk1s);
+    end
 
     % Calculates P,Q
-    CstPQa = sphCalculatePQ(NQ, absmvec, stGeometry, stk1s, NB);
+    CstPQa = sphCalculatePQ(NQ, absmvec, stGeometry, stk1s, NB, bForceNormalBessels);
     % Store errors
     Ntest=Nmin:2:NQ; % Test by steps of 2
     nnmax=length(Ntest);
